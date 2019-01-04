@@ -70,7 +70,6 @@ Animations *animations = Animations::GetInstance();
 SceneManager *SceneManager::__instance = NULL;
 #pragma endregion
 
-
 SceneManager::SceneManager()
 {
 	scene = 0;
@@ -180,6 +179,12 @@ void SceneManager::KeyState(BYTE * states)
 		return;
 
 	if (simon->GetState() == SIMON_STATE_HIT_DOWN_STAIR && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_THROW_UP_STAIR && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_THROW_DOWN_STAIR && !IsRenderDone(300))
 		return;
 
 	if (simon->isHitGate) return;
@@ -379,14 +384,37 @@ void SceneManager::OnKeyDown(int KeyCode)
 			return;
 		if (subWeapon->GetState() == DAGGER) {
 			if (simon->heart <= 0) return;			
-			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP || 
-				simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR || simon->GetState() == SIMON_STATE_IDLE_UP_STAIR) {
+			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP) {
 				float simonX, simonY;
 				simon->GetPosition(simonX, simonY);
 				dagger->SetPosition(simonX, simonY + 10);
 				dagger->SetOrientation(simon->GetOrientation());
 				dagger->isVisible = true;
 				simon->SetState(SIMON_STATE_THROW_STAND);
+				simon->heart -= 1;
+				simon->allowUseSubWeapon = false;
+				subWeaponTimer = GetTickCount();
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				dagger->SetPosition(simonX, simonY + 10);
+				dagger->SetOrientation(simon->GetOrientation());
+				dagger->isVisible = true;
+				simon->SetState(SIMON_STATE_THROW_DOWN_STAIR);
+				simon->heart -= 1;
+				simon->allowUseSubWeapon = false;
+				subWeaponTimer = GetTickCount();
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_UP_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				dagger->SetPosition(simonX, simonY + 10);
+				dagger->SetOrientation(simon->GetOrientation());
+				dagger->isVisible = true;
+				simon->SetState(SIMON_STATE_THROW_UP_STAIR);
 				simon->heart -= 1;
 				simon->allowUseSubWeapon = false;
 				subWeaponTimer = GetTickCount();
@@ -429,8 +457,7 @@ void SceneManager::OnKeyDown(int KeyCode)
 		else if (subWeapon->GetState() == FIRE_BOMB)
 		{
 			if (simon->heart <= 0) return;
-			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP ||
-				simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR || simon->GetState() == SIMON_STATE_IDLE_UP_STAIR) {
+			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP) {
 				float simonX, simonY;
 				simon->GetPosition(simonX, simonY);
 				firebomb->SetPosition(simonX, simonY + 10);
@@ -438,6 +465,32 @@ void SceneManager::OnKeyDown(int KeyCode)
 				firebomb->isVisible = true;
 				firebomb->SetState(FB_THROW);
 				simon->SetState(SIMON_STATE_THROW_STAND);
+				simon->heart -= 1;
+				simon->allowUseSubWeapon = false;
+				subWeaponTimer = GetTickCount();
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				firebomb->SetPosition(simonX, simonY + 10);
+				firebomb->SetOrientation(simon->GetOrientation());
+				firebomb->isVisible = true;
+				firebomb->SetState(FB_THROW);
+				simon->SetState(SIMON_STATE_THROW_DOWN_STAIR);
+				simon->heart -= 1;
+				simon->allowUseSubWeapon = false;
+				subWeaponTimer = GetTickCount();
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_UP_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				firebomb->SetPosition(simonX, simonY + 10);
+				firebomb->SetOrientation(simon->GetOrientation());
+				firebomb->isVisible = true;
+				firebomb->SetState(FB_THROW);
+				simon->SetState(SIMON_STATE_THROW_UP_STAIR);
 				simon->heart -= 1;
 				simon->allowUseSubWeapon = false;
 				subWeaponTimer = GetTickCount();
@@ -458,8 +511,7 @@ void SceneManager::OnKeyDown(int KeyCode)
 		else if (subWeapon->GetState() == AXE)
 		{
 			if (simon->heart <= 0) return;
-			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP ||
-				simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR || simon->GetState() == SIMON_STATE_IDLE_UP_STAIR) {
+			if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP) {
 				float simonX, simonY;
 				simon->GetPosition(simonX, simonY);
 				axe->SetPosition(simonX, simonY + 10);
@@ -468,6 +520,30 @@ void SceneManager::OnKeyDown(int KeyCode)
 				axe->loseHP = false;
 				axe->SetState(AXE_THROW);
 				simon->SetState(SIMON_STATE_THROW_STAND);
+				simon->heart -= 1;
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_DOWN_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				axe->SetPosition(simonX, simonY + 10);
+				axe->SetOrientation(simon->GetOrientation());
+				axe->isVisible = true;
+				axe->loseHP = false;
+				axe->SetState(AXE_THROW);
+				simon->SetState(SIMON_STATE_THROW_DOWN_STAIR);
+				simon->heart -= 1;
+			}
+			else if (simon->GetState() == SIMON_STATE_IDLE_UP_STAIR)
+			{
+				float simonX, simonY;
+				simon->GetPosition(simonX, simonY);
+				axe->SetPosition(simonX, simonY + 10);
+				axe->SetOrientation(simon->GetOrientation());
+				axe->isVisible = true;
+				axe->loseHP = false;
+				axe->SetState(AXE_THROW);
+				simon->SetState(SIMON_STATE_THROW_UP_STAIR);
 				simon->heart -= 1;
 			}
 			else if (simon->GetState() == SIMON_STATE_SIT) {
@@ -1299,7 +1375,7 @@ void SceneManager::Update(DWORD dt)
 			simon->SetState(SIMON_STATE_IDLE);
 			if (stage == STAGE_1)
 			{
-				simon->SetPosition(60, 60);
+				simon->SetPosition(60, 250);
 				game->SetCameraPosition(0, 0);
 			}			
 			else if (stage == STAGE_2)
@@ -1321,6 +1397,7 @@ void SceneManager::Update(DWORD dt)
 			whip->SetState(NORMAL_WHIP);
 			simon->heart = 5;
 			simonRespawn = 0;
+			scoreboard->time = 300;
 		}	
 	}
 
@@ -1512,8 +1589,6 @@ void SceneManager::Draw()
 {	
 	scoreboard = new ScoreBoard();
 	scoreboard->SetPosition(0, 0);
-
-	//subWeapon = new SubWeapon();
 
 	if (scene == SCENE_1)
 	{
@@ -1915,6 +1990,8 @@ int SceneManager::CheckCollisionnBetweenSimonAndDownStair()
 				}
 				else if (simon->isOnStair == false)
 				{
+					if (simon->x > 3872 && simon->x < 3900)
+						return false;
 					if (simon->x > listStairs[i]->x + 10) {
 						simon->SetState(SIMON_STATE_WALKING);
 						simon->nx = -1;

@@ -39,6 +39,8 @@ Simon::Simon(): GameObject()
 	AddAnimation(SIMON_ANI_HIT_DOWN_STAIR);
 	AddAnimation(SIMON_ANI_DIE);
 	AddAnimation(SIMON_ANI_INVISIBLE);
+	AddAnimation(SIMON_ANI_THROW_UP_STAIR);
+	AddAnimation(SIMON_ANI_THROW_DONW_STAIR);
 
 	SetState(SIMON_STATE_IDLE);
 
@@ -635,6 +637,8 @@ void Simon::SetState(int state)
 	case SIMON_STATE_THROW_STAND:
 	case SIMON_STATE_HIT_UP_STAIR:
 	case SIMON_STATE_HIT_DOWN_STAIR:
+	case SIMON_STATE_THROW_DOWN_STAIR:
+	case SIMON_STATE_THROW_UP_STAIR:
 		isStand = TRUE;
 		vx = 0;
 		timer = GetTickCount();

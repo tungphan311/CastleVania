@@ -6,7 +6,9 @@ ScoreBoard::ScoreBoard()
 {
 	nx = -1;
 	font = NULL;
-	D3DXCreateFont(Game::GetInstance()->GetDirect3DDevice(), 0, 0, FW_BOLD, 1, false, DEFAULT_CHARSET,OUT_TT_ONLY_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI", &font);
+	AddFontResourceEx(L"Resources\\Font\\prstart.ttf", FR_PRIVATE, NULL);
+	D3DXCreateFont(Game::GetInstance()->GetDirect3DDevice(), 0, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_TT_ONLY_PRECIS, 
+					ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Press Start", &font);
 	healBar = 17;
 	playerHeal = 17;
 	enemyHeal = 17;
@@ -62,13 +64,13 @@ void ScoreBoard::Render()
 	if (subWeapon == 0)
 		Game::GetInstance()->Draw(-1, x + 280, y + 40, Textures::GetInstance()->Get(ID_TEX_ITEM_DAGGER), 0, 0, 32, 18);
 	else if (subWeapon == 1)
-		Game::GetInstance()->Draw(-1, x + 280, y + 32, Textures::GetInstance()->Get(ID_TEX_ITEM_AXE), 0, 0, 30, 28);
+		Game::GetInstance()->Draw(-1, x + 280, y + 34, Textures::GetInstance()->Get(ID_TEX_ITEM_AXE), 0, 0, 30, 28);
 	else if (subWeapon == 2)
 		Game::GetInstance()->Draw(-1, x + 280, y + 32, Textures::GetInstance()->Get(ID_TEX_ITEM_FIRE_BOMB), 0, 0, 32, 32);
 	else if (subWeapon == 3)
 		Game::GetInstance()->Draw(-1, x + 280, y + 32, Textures::GetInstance()->Get(ID_TEX_ITEM_WATCH), 0, 0, 30, 32);
 	else if (subWeapon == 4)
-		Game::GetInstance()->Draw(-1, x + 280, y + 32, Textures::GetInstance()->Get(ID_TEX_ITEM_BOOMERANG), 0, 0, 32, 32);
+		Game::GetInstance()->Draw(-1, x + 280, y + 34, Textures::GetInstance()->Get(ID_TEX_ITEM_BOOMERANG), 0, 0, 32, 32);
 
 	// vẽ máu của player và boss
 	for (int i = 0; i < healBar; i++)
@@ -84,7 +86,7 @@ void ScoreBoard::Render()
 		Game::GetInstance()->Draw(-1, x + 105 + 8 * i + 1, y + 48, Textures::GetInstance()->Get(ID_TEX_HEAL), 16, 0, 24, 12);
 	
 	// tính toán thời gian
-	SetRect(&rect, 280, 8, 373, 26);
+	SetRect(&rect, 280, 12, 373, 30);
 	string timeLeft = std::to_string(time);
 	while (timeLeft.length() < 4)
 	{
@@ -93,7 +95,7 @@ void ScoreBoard::Render()
 	font->DrawTextA(NULL, timeLeft.c_str(), -1, &rect, DT_VCENTER | DT_CENTER, D3DCOLOR_XRGB(255, 255, 255));
 
 	// đặt giá trị cho stage
-	SetRect(&rect, 457, 8, 520, 26);
+	SetRect(&rect, 457, 12, 520, 30);
 	string scene = std::to_string(stage);
 	scene = '0' + scene;
 	font->DrawTextA(NULL, scene.c_str(), -1, &rect, DT_VCENTER | DT_CENTER, D3DCOLOR_XRGB(255, 255, 255));
@@ -113,7 +115,7 @@ void ScoreBoard::Render()
 	font->DrawTextA(NULL, simonLife.c_str(), -1, &rect, DT_VCENTER | DT_LEFT | DT_TOP, D3DCOLOR_XRGB(255, 255, 255));
 
 	// hiện giá trị score
-	SetRect(&rect, 100, 8, 212, 26);
+	SetRect(&rect, 100, 12, 212, 30);
 	string point = std::to_string(score);
 	while (point.length() < 6)
 		point = '0' + point;

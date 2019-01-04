@@ -23,7 +23,7 @@ void TileMap::LoadSpritesFromFile()
 {
 	Textures * texture = Textures::GetInstance();
 
-	texture->Add(ID, texFilePath, D3DCOLOR_XRGB(255, 255, 255));
+	texture->Add(ID, texFilePath, D3DCOLOR_XRGB(5, 5, 5));
 
 
 	LPDIRECT3DTEXTURE9 texTileMap = texture->Get(ID);
