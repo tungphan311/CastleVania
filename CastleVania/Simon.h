@@ -27,6 +27,7 @@ public:
 	bool isHitCross;
 	bool loseHP;
 	bool doubleShot;
+	bool win;
 
 	int whipState;
 	int HP;

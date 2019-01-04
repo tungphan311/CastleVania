@@ -20,6 +20,7 @@ Simon::Simon(): GameObject()
 	allowUseSubWeapon = TRUE;
 	whipState = 0;
 	doubleShot = FALSE;
+	win = FALSE;
 
 	AddAnimation(SIMON_ANI_IDLE);
 	AddAnimation(SIMON_ANI_WALKING);
@@ -30,7 +31,6 @@ Simon::Simon(): GameObject()
 	AddAnimation(SIMON_ANI_POWER_UP);
 	AddAnimation(SIMON_ANI_THROW_STAND);
 	AddAnimation(SIMON_ANI_THROW_SIT);
-	AddAnimation(SIMON_ANI_INJURED);
 	AddAnimation(SIMON_ANI_GO_UP_STAIR);
 	AddAnimation(SIMON_ANI_IDLE_UP_STAIR);
 	AddAnimation(SIMON_ANI_GO_DOWN_STAIR);
@@ -41,6 +41,8 @@ Simon::Simon(): GameObject()
 	AddAnimation(SIMON_ANI_INVISIBLE);
 	AddAnimation(SIMON_ANI_THROW_UP_STAIR);
 	AddAnimation(SIMON_ANI_THROW_DONW_STAIR);
+	AddAnimation(SIMON_ANI_INJURED_LEFT);
+	AddAnimation(SIMON_ANI_INJURED_RIGHT);
 
 	SetState(SIMON_STATE_IDLE);
 
@@ -145,8 +147,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						y += dy;
 					}
 
-					if (ny != 0) vy = 0;
-					if (nx != 0) vx = 0;
+					if (e->ny <= 0) vy = 0;
+					if (e->nx != 0) vx = 0;
 				}
 			
 			}
@@ -214,6 +216,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					doubleShot = true;
 				else if (e->obj->GetState() == ITEM_INVISIBILITY)
 					SetState(SIMON_STATE_INVISIBLE);
+				else if (e->obj->state == ITEM_BALL)
+					win = true;
 			}
 			else if (dynamic_cast<Zombie*>(e->obj))
 			{
@@ -221,17 +225,28 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (z->state != ZOMBIE_DESTROY && z->state != ZOMBIE_ANI_INACTIVE)
 				{
 					if (!untouchable) {
-						if (e->nx != 0) x += dx;
-						if (e->ny != 0) y += dy;
+						if (e->nx == 1)
+						{
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+						else if (e->nx == -1)
+						{
+							SetState(SIMON_STATE_INJURED_LEFT);
+						}	
+						else if (e->nx == 0)
+						{
+							if (vx > 0)
+							{
+								SetState(SIMON_STATE_INJURED_LEFT);
 
-						if (e->nx < 0 && nx < 0) nx = 1;
-						else if (e->nx < 0 && nx > 0) nx = 1;
-						else if (e->nx > 0 && nx < 0) nx = -1;
-						else if (e->nx > 0 && nx > 0) nx = -1;
-
-						SetState(SIMON_STATE_INJURED);
+							}
+							else if (vx < 0)
+							{
+								SetState(SIMON_STATE_INJURED_RIGHT);
+							}
+						}
+											
 						StartUntouchable();
-
 						HP -= 2;
 					}
 					else
@@ -246,13 +261,27 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (!untouchable)
 				{
-					if (e->nx != 0) x += dx;
-					if (e->ny != 0) y += dy;
+					if (e->nx == 1)
+					{
+						SetState(SIMON_STATE_INJURED_RIGHT);
+					}
+					else if (e->nx == -1)
+					{
+						SetState(SIMON_STATE_INJURED_LEFT);
+					}
+					else if (e->nx == 0)
+					{
+						if (vx > 0)
+						{
+							SetState(SIMON_STATE_INJURED_LEFT);
 
-					if (e->nx < 0) nx = 1;
-					else if (e->nx > 0) nx = -1;
+						}
+						else if (vx < 0)
+						{
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+					}
 
-					SetState(SIMON_STATE_INJURED);
 					StartUntouchable();
 
 					HP -= 2;
@@ -268,15 +297,29 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (b->state != BAT_DESTROY && b->state != BAT_INACTIVE)
 				{
 					if (!untouchable) {
-						if (e->nx != 0) x += dx;
-						if (e->ny != 0) y += dy;
+						if (e->nx == 1)
+						{
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+						else if (e->nx == -1)
+						{
+							
+							SetState(SIMON_STATE_INJURED_LEFT);
+						}
+						else if (e->nx == 0)
+						{
+							if (vx > 0)
+							{
+								
+								SetState(SIMON_STATE_INJURED_LEFT);
 
-						if (e->nx < 0 && nx < 0) nx = 1;
-						else if (e->nx < 0 && nx > 0) nx = 1;
-						else if (e->nx > 0 && nx < 0) nx = -1;
-						else if (e->nx > 0 && nx > 0) nx = -1;
-
-						SetState(SIMON_STATE_INJURED);
+							}
+							else if (vx < 0)
+							{
+							
+								SetState(SIMON_STATE_INJURED_RIGHT);
+							}
+						}
 						StartUntouchable();
 
 						HP -= 2;
@@ -296,15 +339,30 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (fm->state != FISHMAN_DESTROY && fm->state != FISHMAN_INACTIVE)
 				{
 					if (!untouchable) {
-						if (e->nx != 0) x += dx;
-						if (e->ny != 0) y += dy;
+						if (e->nx == 1)
+						{
+						
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+						else if (e->nx == -1)
+						{
+						
+							SetState(SIMON_STATE_INJURED_LEFT);
+						}
+						else if (e->nx == 0)
+						{
+							if (vx > 0)
+							{
+							
+								SetState(SIMON_STATE_INJURED_LEFT);
 
-						if (e->nx < 0 && nx < 0) nx = 1;
-						else if (e->nx < 0 && nx > 0) nx = 1;
-						else if (e->nx > 0 && nx < 0) nx = -1;
-						else if (e->nx > 0 && nx > 0) nx = -1;
-
-						SetState(SIMON_STATE_INJURED);
+							}
+							else if (vx < 0)
+							{
+						
+								SetState(SIMON_STATE_INJURED_RIGHT);
+							}
+						}
 						StartUntouchable();
 
 						e->obj->isVisible = false;
@@ -319,15 +377,30 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (dynamic_cast<FireBall*> (e->obj))
 			{
 				if (!untouchable) {
-					if (e->nx != 0) x += dx;
-					if (e->ny != 0) y += dy;
+					if (e->nx == 1)
+					{
+						
+						SetState(SIMON_STATE_INJURED_RIGHT);
+					}
+					else if (e->nx == -1)
+					{
+					
+						SetState(SIMON_STATE_INJURED_LEFT);
+					}
+					else if (e->nx == 0)
+					{
+						if (vx > 0)
+						{
+						
+							SetState(SIMON_STATE_INJURED_LEFT);
 
-					if (e->nx < 0 && nx < 0) nx = 1;
-					else if (e->nx < 0 && nx > 0) nx = 1;
-					else if (e->nx > 0 && nx < 0) nx = -1;
-					else if (e->nx > 0 && nx > 0) nx = -1;
-
-					SetState(SIMON_STATE_INJURED);
+						}
+						else if (vx < 0)
+						{
+					
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+					}
 					StartUntouchable();
 
 					e->obj->isVisible = false;
@@ -340,15 +413,30 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (dynamic_cast<Boss*> (e->obj)) {
 				if (!untouchable) {
-					if (e->nx != 0) x += dx;
-					if (e->ny != 0) y += dy;
+					if (e->nx == 1)
+					{
+					
+						SetState(SIMON_STATE_INJURED_RIGHT);
+					}
+					else if (e->nx == -1)
+					{
+					
+						SetState(SIMON_STATE_INJURED_LEFT);
+					}
+					else if (e->nx == 0)
+					{
+						if (vx > 0)
+						{
+					
+							SetState(SIMON_STATE_INJURED_LEFT);
 
-					if (e->nx < 0 && nx < 0) nx = 1;
-					else if (e->nx < 0 && nx > 0) nx = 1;
-					else if (e->nx > 0 && nx < 0) nx = -1;
-					else if (e->nx > 0 && nx > 0) nx = -1;
-
-					SetState(SIMON_STATE_INJURED);
+						}
+						else if (vx < 0)
+						{
+						
+							SetState(SIMON_STATE_INJURED_RIGHT);
+						}
+					}
 					StartUntouchable();
 
 					HP -= 2;
@@ -560,13 +648,16 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetState(SIMON_STATE_DIE);
 		timer = GetTickCount();
 	}
+
+	if (y > 300 + 80 && vy > 0)
+		SetState(SIMON_STATE_DIE);
 			
 	if (y > 276 + 80 && isOnStair)
 	{
 		if (x < 3500)
 			SetPosition(5730.0f, -33.0f + 80);
 		else if (x > 3700)
-			SetPosition(6730, -33 + 80);
+			SetPosition(6370, -33 + 80);
 	}		
 
 	if (y < -33 + 80 && isOnStair) {
@@ -658,21 +749,26 @@ void Simon::SetState(int state)
 		animations[state]->ResetAnimation();
 		break;
 
-	case SIMON_STATE_INJURED:
+	case SIMON_STATE_INJURED_LEFT:
 		if (!isOnStair) {
-			if (nx > 0) {
-				vx = -SIMON_INJURED_DEFLECT_SPEED / 2;
-			}
-			else if (nx < 0)
-			{
-				vx = SIMON_INJURED_DEFLECT_SPEED / 2;
-			}
+			vx = -SIMON_INJURED_DEFLECT_SPEED / 2;
 			vy = -SIMON_INJURED_DEFLECT_SPEED;
 			timer = GetTickCount();
-			animations[state]->ResetAnimation();
 		}		
 		else {
 			vx = 0; 
+			vy = 0;
+		}
+		break;
+
+	case SIMON_STATE_INJURED_RIGHT:
+		if (!isOnStair) {
+			vx = SIMON_INJURED_DEFLECT_SPEED / 2;
+			vy = -SIMON_INJURED_DEFLECT_SPEED;
+			timer = GetTickCount();
+		}
+		else {
+			vx = 0;
 			vy = 0;
 		}
 		break;

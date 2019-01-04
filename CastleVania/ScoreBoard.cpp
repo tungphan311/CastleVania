@@ -31,6 +31,7 @@ void ScoreBoard::LoadResources(Textures *& textures, Sprites *& sprites, Animati
 {
 	textures->Add(ID_TEX_SCORE_BOARD, BOARD_TEXTURE, D3DCOLOR_XRGB(0, 0, 0));
 	textures->Add(ID_TEX_HEAL, HEAL_TEXTURE, D3DCOLOR_XRGB(255, 0, 255));
+	textures->Add(ID_TEX_BLACKBOARD, BLACKBOARD_TEXTURE, D3DCOLOR_XRGB(255, 0, 255));
 }
 
 void ScoreBoard::Update(DWORD dt, Simon * simon, SubWeapon * subWeapon, Boss *boss)

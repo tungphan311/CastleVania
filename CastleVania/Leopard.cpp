@@ -77,7 +77,7 @@ void Leopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (direction == 1)
 		{
-			if (cam.x <= 1275)
+			if (cam.x <= 1275 && state == LEOPARD_SLEEP)
 			{
 				SetState(LEOPARD_RUN);
 			}
@@ -107,11 +107,11 @@ void Leopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (direction == 1)
 		{
-			if (cam.x <= 1660)
+			if (cam.x <= 1660 && state == LEOPARD_SLEEP)
 				SetState(LEOPARD_JUMP);
 			if (state == LEOPARD_RUN)
 				isJump = false;
-			if (x <= 1856 && isJump == false)
+			if (x <= 1856 && isJump == false && state == LEOPARD_RUN)
 			{
 				checkCollision = false;
 				SetState(LEOPARD_JUMP);
@@ -127,9 +127,9 @@ void Leopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (direction == 1)
 		{
-			if (cam.x <= 1760)
+			if (cam.x <= 1760 && state == LEOPARD_SLEEP)
 				SetState(LEOPARD_RUN);
-			if (state == LEOPARD_RUN && (x + LEOPARD_BBOX_WIDTH >= 2050) && isJump == false)
+			if (state == LEOPARD_RUN && (x + LEOPARD_BBOX_WIDTH >= 2048) && isJump == false)
 			{
 				checkCollision = false;
 				SetState(LEOPARD_JUMP);

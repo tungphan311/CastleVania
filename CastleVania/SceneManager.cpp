@@ -172,7 +172,10 @@ void SceneManager::KeyState(BYTE * states)
 	if (simon->GetState() == SIMON_STATE_SIT && isSitting)
 		return;
 
-	if (simon->GetState() == SIMON_STATE_INJURED && !IsRenderDone(200))
+	if (simon->GetState() == SIMON_STATE_INJURED_LEFT && simon->vy < 0)
+		return;
+
+	if (simon->GetState() == SIMON_STATE_INJURED_RIGHT && simon->vy < 0)
 		return;
 
 	if (simon->GetState() == SIMON_STATE_HIT_UP_STAIR && !IsRenderDone(300))
@@ -189,7 +192,7 @@ void SceneManager::KeyState(BYTE * states)
 
 	if (simon->isHitGate) return;
 
-	if (win)
+	if (simon->win)
 	{
 		simon->SetState(SIMON_STATE_IDLE);
 		return;
@@ -347,7 +350,7 @@ void SceneManager::OnKeyDown(int KeyCode)
 	if (simon->GetState() == SIMON_STATE_DIE)
 		return;
 	if (simon->isHitGate) return;
-	if (win)
+	if (simon->win)
 	{
 		simon->SetState(SIMON_STATE_IDLE);
 		return;
@@ -751,10 +754,10 @@ void SceneManager::Update(DWORD dt)
 				float cx, cy;
 				simon->GetPosition(cx, cy);
 
-				//if (listLeopards.size() == 0)
-				//{
-				//	RespawnLeopard(simon);
-				//}
+				if (listLeopards.size() == 0)
+				{
+					RespawnLeopard(simon);
+				}
 
 				if (cx > SCREEN_WIDTH / 2 && cx + SCREEN_WIDTH / 2 < tileMap->GetMapWidth())
 					game->SetCameraPosition(cx - SCREEN_WIDTH / 2, 0);
@@ -1372,6 +1375,9 @@ void SceneManager::Update(DWORD dt)
 	{
 		if (simonRespawn >= 1000)
 		{
+			simon->isOnStair = false;
+			simon->untouchable = false;
+			simon->nx = 1;
 			simon->SetState(SIMON_STATE_IDLE);
 			if (stage == STAGE_1)
 			{
@@ -1394,10 +1400,26 @@ void SceneManager::Update(DWORD dt)
 			simon->life -= 1;
 			simon->HP = 17;
 			simon->powerUp = false;
-			whip->SetState(NORMAL_WHIP);
+			simon->whipState = NORMAL_WHIP;
 			simon->heart = 5;
 			simonRespawn = 0;
 			scoreboard->time = 300;
+
+			bool killAll = false;
+			if (killAll == false)
+			{
+				for (int i = 0; i < listEnemies.size(); i++)
+				{
+					if (dynamic_cast<Zombie*>(listEnemies[i]))
+					{
+						if ((listEnemies[i]->x >= game->GetCameraPosition().x) && (listEnemies[i]->x <= game->GetCameraPosition().x + SCREEN_WIDTH - 20))
+						{
+							listEnemies[i]->isVisible = false;
+						}
+					}				
+				}
+				killAll = true;
+			}
 		}	
 	}
 
@@ -1406,7 +1428,7 @@ void SceneManager::Update(DWORD dt)
 		pause = false;
 	}
 
-	if (!pause)
+	if (!pause && !simon->win)
 	{
 		timeCount += dt;
 		if (timeCount >= 1000)
@@ -1440,6 +1462,35 @@ void SceneManager::Update(DWORD dt)
 			}
 		}
 	}
+
+	if (simon->win)
+	{
+		if (scoreboard->time > 0)
+		{
+			scoreboard->time -= 1;
+			simon->point += 100;
+		}
+		else
+		{
+			if (simon->heart > 0)
+			{
+				simon->heart -= 1;
+				simon->point += 1000;
+			}		
+			else if (simon->heart == 0)
+			{
+				win = true;
+			}
+		}
+	}
+	//if (win)
+	//{
+	//	game->Draw(1, game->GetCameraPosition().x, 0, Textures::GetInstance()->Get(ID_TEX_BLACKBOARD), 0, 0, 520, 480);
+	//	SetRect(&rect, game->GetCameraPosition().x + SCREEN_WIDTH / 2 - 25, SCREEN_HEIGHT / 2 - 20, game->GetCameraPosition().x + SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT / 2 + 20);
+	//	string message = "YOU WIN !!!";
+	//	scoreboard->font->DrawTextA(NULL, message.c_str(), -1, &rect, DT_VCENTER | DT_LEFT | DT_TOP, D3DCOLOR_XRGB(255, 255, 255));
+	//}
+
 	backcolorTimer += dt;
 
 	scoreboard->stage = scene;
@@ -1753,20 +1804,20 @@ void SceneManager::Draw()
 #pragma endregion
 
 #pragma region __LEOPARD__
-		objectPosition.clear();
-		game->LoadObjectPositionFromFile(LEOPARD_INFO, objectPosition);
-		for (int i = 0; i < 3; i++)
-		{
-			leopard = new Leopard(objectPosition[i][0]);
-			leopard->SetPosition(objectPosition[i][1], objectPosition[i][2] + 80);
-			leopard->nx = -1;
-			leopard->direction = -1;
-			leopard->posY = objectPosition[i][2] + 80;
-			//objects.push_back(leopard);
-			listEnemies.push_back(leopard);
-			listLeopards.push_back(leopard);
-			grid->insertObjectIntoGrid(leopard);
-		}
+		//objectPosition.clear();
+		//game->LoadObjectPositionFromFile(LEOPARD_INFO, objectPosition);
+		//for (int i = 0; i < 3; i++)
+		//{
+		//	leopard = new Leopard(objectPosition[i][0]);
+		//	leopard->SetPosition(objectPosition[i][1], objectPosition[i][2] + 80);
+		//	leopard->nx = -1;
+		//	leopard->direction = -1;
+		//	leopard->posY = objectPosition[i][2] + 80;
+		//	//objects.push_back(leopard);
+		//	listEnemies.push_back(leopard);
+		//	listLeopards.push_back(leopard);
+		//	grid->insertObjectIntoGrid(leopard);
+		//}
 #pragma endregion
 
 #pragma region __GATE__
@@ -1826,7 +1877,9 @@ void SceneManager::SpawnFishMan(int nx, Simon * simon)
 	}
 	else if (nx < 0)
 	{
-		int fx = rand() % ((int)cam.x + SCREEN_WIDTH - (int)simon->x - SIMON_BBOX_WIDTH) + ((int)simon->x + SIMON_BBOX_WIDTH + 1);
+		int fx = rand() % ((int)cam.x + SCREEN_WIDTH  - (int)simon->x - SIMON_BBOX_WIDTH) + ((int)simon->x + SIMON_BBOX_WIDTH + 1);
+		if (fx > 6586)
+			fx = 6545;
 		fishman->SetPosition(fx, 222);
 	}
 	//objects.push_back(fishman);
@@ -1877,7 +1930,7 @@ void SceneManager::RespawnLeopard(Simon * simon)
 	if (simon->x <= 600)
 	{
 		objectPosition.clear();
-		game->LoadObjectPositionFromFile(L"Resources\\Enemy\\leopard.txt", objectPosition);
+		game->LoadObjectPositionFromFile(LEOPARD_INFO, objectPosition);
 		for (int i = 0; i < 3; i++)
 		{
 			leopard = new Leopard(objectPosition[i][0]);
@@ -1894,7 +1947,7 @@ void SceneManager::RespawnLeopard(Simon * simon)
 	else if (simon->x >= 2366)
 	{
 		objectPosition.clear();
-		game->LoadObjectPositionFromFile(L"Resources\\Enemy\\leopard.txt", objectPosition);
+		game->LoadObjectPositionFromFile(LEOPARD_INFO, objectPosition);
 		for (int i = 0; i < 3; i++)
 		{
 			leopard = new Leopard(objectPosition[i][0]);
@@ -2166,6 +2219,7 @@ void SceneManager::SetItemOnDestroy()
 					listItems.push_back(item);
 					bo->itemInside += 1;
 				}
+				simon->win = true;
 			}
 		}
 	}

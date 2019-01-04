@@ -31,6 +31,7 @@ public:
 	DWORD crossTimer;
 	bool changeBackcolor;
 	DWORD backcolorTimer;
+	RECT rect;
 
 	int heal;
 	int score;

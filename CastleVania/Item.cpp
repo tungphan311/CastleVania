@@ -124,18 +124,20 @@ void Item::Render()
 
 void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (timeAppear == -1)
-		timeAppear = GetTickCount();
-	else {
-		DWORD now = GetTickCount();
+	if (state != ITEM_BALL)
+	{
+		if (timeAppear == -1)
+			timeAppear = GetTickCount();
+		else {
+			DWORD now = GetTickCount();
 
-		if (now - timeAppear > ITEM_TIME_DISAPPEAR) {
-			isVisible = false;
-			return;
+			if (now - timeAppear > ITEM_TIME_DISAPPEAR) {
+				isVisible = false;
+				return;
+			}
 		}
 	}
-
-
+	
 	GameObject::Update(dt);
 
 	// Check collision between item and ground (falling on ground)
@@ -159,7 +161,7 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		y += min_ty * dy + ny * 0.4f;
 		if (ny != 0) vy = 0;
-		DebugOut(L"Item collides ground\n");
+		DebugOut(L"Item %d collides ground\n", state);
 	}
 
 	// clean up collision events
