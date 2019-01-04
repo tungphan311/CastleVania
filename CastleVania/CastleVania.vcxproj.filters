@@ -13,5 +13,222 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{d8c961c4-da3f-4826-afd4-63a8e24ae5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubWeapon">
+      <UniqueIdentifier>{26c163cf-b310-4b06-9718-ab234709747f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Static Object">
+      <UniqueIdentifier>{652ab434-7cd8-4efe-b15a-6eb4b90439de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{b5962bfa-4b86-46c9-b9a7-a008a883e8e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{32e20876-952b-4b15-b6bd-49411619db3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Simon">
+      <UniqueIdentifier>{e4fe0e94-af03-445d-8758-0b278714e7d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{c4ea0b2c-951f-4467-83ff-b0e88fa1648c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Bat.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Zombie.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Dagger.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="SubWeapon.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Watch.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBomb.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Leopard.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Axe.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="FishMan.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Candle.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gate.cpp">
+      <Filter>Static Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>Static Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Static Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Stair.cpp">
+      <Filter>Static Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Whip.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreBoard.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Simon.cpp">
+      <Filter>Simon</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickDestroyEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="MoneyBagEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bat.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Zombie.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Dagger.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBomb.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="SubWeapon.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Watch.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Leopard.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Axe.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="FishMan.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Candle.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Stair.h">
+      <Filter>Static Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Gate.h">
+      <Filter>Static Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>Static Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Static Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Whip.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreBoard.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Simon.h">
+      <Filter>Simon</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickDestroyEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyBagEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
