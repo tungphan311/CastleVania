@@ -6,7 +6,7 @@ ScoreBoard::ScoreBoard()
 {
 	nx = -1;
 	font = NULL;
-	D3DXCreateFont(Game::GetInstance()->GetDirect3DDevice(), 0, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI", &font);
+	D3DXCreateFont(Game::GetInstance()->GetDirect3DDevice(), 0, 0, FW_BOLD, 1, false, DEFAULT_CHARSET,OUT_TT_ONLY_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI", &font);
 	healBar = 17;
 	playerHeal = 17;
 	enemyHeal = 17;

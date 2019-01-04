@@ -6,6 +6,9 @@
 #include "Define.h"
 #include <vector>
 #include "dxaudio.h"
+#include <fstream>
+#include <string>
+#include <sstream>
 using namespace std;
 
 class KeyEventHandler

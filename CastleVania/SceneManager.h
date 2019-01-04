@@ -1,6 +1,6 @@
 #pragma once
-#include "Scene.h"
 #include "Game.h"
+#include "Simon.h"
 
 class SceneManager
 {
