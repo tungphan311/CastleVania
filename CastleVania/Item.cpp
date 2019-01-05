@@ -119,7 +119,7 @@ void Item::LoadResources(Textures *& textures, Sprites *& sprites, Animations *&
 void Item::Render()
 {
 	animations[state]->Render(-1, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

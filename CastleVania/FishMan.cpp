@@ -162,7 +162,7 @@ void FishMan::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void FishMan::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void FishMan::SetState(int state)

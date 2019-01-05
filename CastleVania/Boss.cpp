@@ -153,7 +153,7 @@ void Boss::Update(DWORD dt, Simon * simon)
 void Boss::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Boss::SetState(int state, float a)
@@ -186,14 +186,14 @@ void Boss::SetState(int state, float a)
 		else if (nx < 0)
 			vx = -BOSS_SPEED_X_SLOW;
 		if (ny > 0)
-			vy = -BOSS_SPEED_X_FAST;
+			vy = -BOSS_SPEED_X_FAST*1.5;
 		else if (ny < 0)
 			vy = BOSS_SPEED_Y;
 		break;
 		
 	case BOSS_ATTACK_STRAIGHT:
 		vx = 0;
-		vy = BOSS_SPEED_X_FAST*3/4;
+		vy = BOSS_SPEED_X_FAST;
 		break;
 
 	case BOSS_STOP:

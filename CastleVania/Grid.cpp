@@ -68,10 +68,9 @@ void Grid::getListObjectPotential(vector<LPGAMEOBJECT>& listObjects)
 		for (int j = cell_left; j <= cell_right; j++)
 		{
 			for (int k = 0; k < grids[i][j]->objects.size(); k++)
-			{
-				if (list.find(grids[i][j]->objects[k]->id) != list.end())
-					continue;
-				else
+			{		if (list.find(grids[i][j]->objects[k]->id) != list.end())
+				continue;
+		else
 					list[grids[i][j]->objects[k]->id] = grids[i][j]->objects[k];
 			}
 		}

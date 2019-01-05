@@ -157,7 +157,7 @@ void Axe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Axe::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Axe::SetState(int state)

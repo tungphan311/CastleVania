@@ -167,7 +167,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Boomerang::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Boomerang::SetState(int state)

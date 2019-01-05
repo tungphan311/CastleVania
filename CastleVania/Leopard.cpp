@@ -214,7 +214,7 @@ void Leopard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Leopard::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Leopard::SetState(int state)

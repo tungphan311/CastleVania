@@ -50,5 +50,10 @@ public:
 	void SetStand(bool flag) { this->isStand = flag; }
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+
+	void FilterCollisionGround(
+		vector<LPCOLLISIONEVENT>& coEvents,
+		vector<LPCOLLISIONEVENT>& coEventsResult,
+		float & min_tx, float & min_ty, float & nx, float & ny);
 };
 

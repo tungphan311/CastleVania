@@ -75,7 +75,7 @@ void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Candle::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Candle::SetState(int state)

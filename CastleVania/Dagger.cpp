@@ -21,7 +21,7 @@ void Dagger::Render()
 	if (isVisible == true)
 	{
 		animations[state]->Render(-nx, x, y);
-		RenderBoundingBox();
+		//RenderBoundingBox();
 	}
 }
 

@@ -187,7 +187,10 @@ void SceneManager::KeyState(BYTE * states)
 	if (simon->GetState() == SIMON_STATE_THROW_UP_STAIR && !IsRenderDone(300))
 		return;
 
-	if (simon->GetState() == SIMON_STATE_THROW_DOWN_STAIR && !IsRenderDone(300))
+	if (simon->GetState() == SIMON_STATE_THROW_DOWN_STAIR && !IsRenderDone(1500))
+		return;
+
+	if (simon->state == SIMON_STATE_INVISIBLE && !IsRenderDone(300))
 		return;
 
 	if (simon->isHitGate) return;
@@ -355,17 +358,78 @@ void SceneManager::OnKeyDown(int KeyCode)
 		simon->SetState(SIMON_STATE_IDLE);
 		return;
 	}
+	if (simon->GetState() == SIMON_STATE_HIT_STANDING && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_HIT_SITTING && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_POWER_UP && !IsRenderDone(300))
+	{
+		for (int i = 0; i < objects.size(); i++)
+		{
+			if (objects[i]->x + 20 < game->GetCameraPosition().x || objects[i]->x > game->GetCameraPosition().x + SCREEN_WIDTH)
+				continue;
+			if (dynamic_cast<Candle*>(objects[i]))
+			{
+				Candle *c = dynamic_cast<Candle*>(objects[i]);
+				if (c->state == BIG_CANDLE)
+					continue;
+			}
+			if (dynamic_cast<Zombie*>(objects[i]))
+			{
+				Zombie *z = dynamic_cast<Zombie*>(objects[i]);
+				if (z->state == ZOMBIE_DESTROY || z->state == ZOMBIE_INACTIVE)
+					continue;
+			}
+			if (dynamic_cast<Leopard*>(objects[i]))
+			{
+				Leopard *l = dynamic_cast<Leopard*>(objects[i]);
+				if (l->state != LEOPARD_JUMP || l->state == LEOPARD_RUN)
+					continue;
+			}
+			objects[i]->currentState = objects[i]->GetState();
+			objects[i]->isFreeze = true;
+			objects[i]->freeze_start = GetTickCount() - 3700;
+			simon->allowUseSubWeapon = false;
+			pause = true;
+		}
+		return;
+	}
+
+	if ((simon->GetState() == SIMON_STATE_THROW_STAND) && !IsRenderDone(300))
+		return;
+
+	if ((simon->GetState() == SIMON_STATE_THROW_SIT) && !IsRenderDone(300))
+		return;
+	if (simon->GetState() == SIMON_STATE_INJURED_LEFT && simon->vy < 0)
+		return;
+
+	if (simon->GetState() == SIMON_STATE_INJURED_RIGHT && simon->vy < 0)
+		return;
+
+	if (simon->GetState() == SIMON_STATE_HIT_UP_STAIR && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_HIT_DOWN_STAIR && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_THROW_UP_STAIR && !IsRenderDone(300))
+		return;
+
+	if (simon->GetState() == SIMON_STATE_THROW_DOWN_STAIR && !IsRenderDone(1500))
+		return;
 
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_S:
 		if (simon->GetState() == SIMON_STATE_JUMP || simon->isOnStair == true || simon->isOnStair)
 			return;
 		simon->SetState(SIMON_STATE_JUMP);
 		break;
 
-	case DIK_C:
+	case DIK_A:
 		if (simon->GetState() == SIMON_STATE_IDLE || simon->GetState() == SIMON_STATE_JUMP || simon->GetState() == SIMON_STATE_WALKING)
 			simon->SetState(SIMON_STATE_HIT_STANDING);
 		else if (simon->GetState() == SIMON_STATE_SIT)
@@ -618,7 +682,7 @@ void SceneManager::OnKeyDown(int KeyCode)
 		subWeapon->replaceSubWeapon(BOOMERANG);
 		break;
 #pragma endregion
-	case DIK_A:
+	case DIK_P:
 		if (scene == SCENE_2)
 		{
 			stage = 3;
@@ -626,7 +690,7 @@ void SceneManager::OnKeyDown(int KeyCode)
 		}		
 		break;
 
-	case DIK_S:
+	case DIK_O:
 		if (scene == SCENE_2)
 		{
 			stage = 1;
@@ -634,12 +698,19 @@ void SceneManager::OnKeyDown(int KeyCode)
 		}		
 		break;
 
-	case DIK_D:
+	case DIK_I:
 		if (scene == SCENE_2)
 		{
 			stage = 2;
 			simon->SetPosition(3200, 60);
 		}	
+		break;
+
+	case DIK_U:
+		if (scene == 1)
+		{
+			simon->SetPosition(1240, 240);
+		}
 		break;
 	}
 }
@@ -730,6 +801,7 @@ void SceneManager::Update(DWORD dt)
 
 		if (simon->isHitGate == true)
 		{
+			simon->nx = 1;
 			if (simon->x < 1410 - SIMON_BBOX_WIDTH)
 			{
 				simon->SetState(SIMON_STATE_WALKING);
@@ -827,6 +899,9 @@ void SceneManager::Update(DWORD dt)
 
 				if (cx - SCREEN_WIDTH / 2 < 3072)
 					game->SetCameraPosition(3072, 0);
+
+				if (simon->x <= 3072 && simon->vx < 0)
+					simon->x = 3072;
 
 				if (simon->x > 5626 && simon->x < 6662 - SIMON_BBOX_WIDTH)
 				{
@@ -1416,7 +1491,19 @@ void SceneManager::Update(DWORD dt)
 						{
 							listEnemies[i]->isVisible = false;
 						}
-					}				
+					}	
+					else if (dynamic_cast<Bat*>(listEnemies[i]))
+					{
+						listEnemies[i]->isVisible = false;
+					}
+					else if (dynamic_cast<FishMan*>(listEnemies[i]))
+					{
+						listEnemies[i]->isVisible = false;
+					}
+					else if (dynamic_cast<FireBall*>(listEnemies[i]))
+					{
+						listEnemies[i]->isVisible = false;
+					}
 				}
 				killAll = true;
 			}
@@ -1465,23 +1552,23 @@ void SceneManager::Update(DWORD dt)
 
 	if (simon->win)
 	{
-		if (scoreboard->time > 0)
-		{
-			scoreboard->time -= 1;
-			simon->point += 100;
-		}
-		else
-		{
-			if (simon->heart > 0)
+			if (scoreboard->time > 0)
 			{
-				simon->heart -= 1;
-				simon->point += 1000;
-			}		
-			else if (simon->heart == 0)
-			{
-				win = true;
+				scoreboard->time -= 1;
+				simon->point += 100;
 			}
-		}
+			else
+			{
+				if (simon->heart > 0)
+				{
+					simon->heart -= 1;
+					simon->point += 1000;
+				}
+				else if (simon->heart == 0)
+				{
+					win = true;
+				}
+			}
 	}
 	//if (win)
 	//{
@@ -2219,8 +2306,21 @@ void SceneManager::SetItemOnDestroy()
 					listItems.push_back(item);
 					bo->itemInside += 1;
 				}
-				simon->win = true;
 			}
+		}
+	}
+
+	if (simon->x > 1420 && scene == SCENE_1)
+	{
+		if (simon->itemInside == 0)
+		{
+			Item *item = new Item();
+			item->isVisible = true;
+			item->SetPosition(1230, 280);
+			item->SetState(ITEM_FLASH_MONEY_BAG);
+			grid->insertObjectIntoGrid(item);
+			listItems.push_back(item);
+			simon->itemInside += 1;
 		}
 	}
 }	

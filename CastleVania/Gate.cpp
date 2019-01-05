@@ -51,7 +51,17 @@ void Gate::Render()
 {
 	if (type == GATE_2)
 		animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
+}
+
+void Gate::SetState(int state)
+{
+	GameObject::SetState(state);
+
+	if (state == GATE_OPENING)
+	{
+		animations[state]->ResetAnimation();
+	}
 }
 
 void Gate::GetBoundingBox(float & left, float & top, float & right, float & bottom)

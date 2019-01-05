@@ -11,7 +11,7 @@ Stair::Stair(int state, int nx)
 void Stair::Render()
 {
 	//animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Stair::GetBoundingBox(float & left, float & top, float & right, float & bottom)

@@ -48,7 +48,7 @@ void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Whip::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Whip::SetWhipPosition(D3DXVECTOR3 simonPos, bool isStand)

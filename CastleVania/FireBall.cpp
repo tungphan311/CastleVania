@@ -45,7 +45,7 @@ void FireBall::LoadResources(Textures *& textures, Sprites *& sprites, Animation
 void FireBall::Render()
 {
 	animations[state]->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

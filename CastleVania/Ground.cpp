@@ -62,7 +62,7 @@ void Ground::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Ground::Render()
 {
 	animations[state]->Render(-1, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Ground::SetState(int state)

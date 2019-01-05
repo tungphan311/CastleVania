@@ -71,10 +71,20 @@ void Simon::LoadResources(Textures *& textures, Sprites *& sprites, Animations *
 		}
 		else if (resources[i][0] == ANIMATION)
 		{
-			ani = new Animation(100);
-			for (int j = 2; j < resources[i].size(); j++)
-				ani->Add(resources[i][j]);
-			animations->Add(resources[i][1], ani);
+			if (resources[i][1] == SIMON_ANI_INVISIBLE)
+			{
+				ani = new Animation(2000);
+				for (int j = 2; j < resources[i].size(); j++)
+					ani->Add(resources[i][j]);
+				animations->Add(resources[i][1], ani);
+			}
+			else
+			{
+				ani = new Animation(100);
+				for (int j = 2; j < resources[i].size(); j++)
+					ani->Add(resources[i][j]);
+				animations->Add(resources[i][1], ani);
+			}			
 		}
 	}
 }
@@ -90,10 +100,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += SIMON_GRAVITY * dt;
 
 	// simple collision with edge
-	if (x - 15 <= 0 && vx < 0) x = 0;
+	if (x - 15 <= 0 && vx < 0)
+		x = 0;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
+	vector<LPCOLLISIONEVENT> coEventsResultGround;
 
 	coEvents.clear();
 	
@@ -118,9 +130,14 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y += dy;
 	}
 	else {
-		float min_tx, min_ty, nx = 0, ny;
+		float min_tx, min_ty, nx = 0, ny = 0;
+		float min_tx1, min_ty1, nx1 = 0, ny1 = 0;
 
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+		FilterCollisionGround(coEvents, coEventsResultGround, min_tx, min_ty, nx, ny);
+		FilterCollision(coEvents, coEventsResult, min_tx1, min_ty1, nx1, ny1);
+
+		bool isUpdatePosition = false;
+
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -129,36 +146,43 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			// if simon hit candle, do nothing
 			if (dynamic_cast<Candle*>(e->obj))
 			{
-				if (e->nx != 0) x += dx;
-				if (e->ny != 0) y += dy;
-			}
-			else if (dynamic_cast<Ground*>(e->obj)) {
-				if (e->ny > 0)
+				if (isUpdatePosition == true)
+					continue;
+
+				if (e->nx != 0)
 				{
 					x += dx;
+					isUpdatePosition = true;
+				}
+				if (e->ny != 0)
+				{
+					y += dy;
+					isUpdatePosition = true;
+				}
+			}
+			else if (dynamic_cast<Ground*>(e->obj))
+			{
+				if (isUpdatePosition == true)
+					continue;
+				if (e->ny > 0)
+				{
+					x += min_tx * dx + nx * 0.4f;
 					y += dy;
 				}
-				else {
+				else
+				{
 					x += min_tx * dx + nx * 0.4f;
 					y += min_ty * dy + ny * 0.46f;
 
-					if (isOnStair) {
-						x += dx;
-						y += dy;
-					}
-
-					if (e->ny <= 0) vy = 0;
+					if (e->ny < 0) vy = 0;
 					if (e->nx != 0) vx = 0;
-				}
-			
+				}	
+				isUpdatePosition = true;
 			}
 			else if (dynamic_cast<Item*>(e->obj)) {
-				if (e->nx != 0) x += dx;
-				if (e->ny != 0) y += dy;
-
 				e->obj->isVisible = false;
 
-				if (e->obj->GetState() >= ITEM_DAGGER) {
+				if (e->obj->GetState() >= ITEM_DAGGER && e->obj->GetState() <= ITEM_WATCH) {
 					powerUp = true;
 
 					if (e->obj->GetState() == ITEM_DAGGER) {
@@ -177,11 +201,10 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						subWeapon->replaceSubWeapon(AXE);
 						DebugOut(L"Power Up: Axe\n");
 					}
+									
 				}
 				else if (e->obj->GetState() == ITEM_CHAIN) {
 					SetState(SIMON_STATE_POWER_UP);
-
-					vx = 0;
 
 					// upgrade whip
 					if (whip->GetState() == NORMAL_WHIP)
@@ -194,7 +217,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						whip->SetState(LONG_CHAIN);
 						whipState = LONG_CHAIN;
 					}
-
+				}
+				else if (e->obj->GetState() == ITEM_BALL)
+					win = true;
+				else if (e->obj->GetState() == ITEM_INVISIBILITY)
+				{
+					//vx = 0;
+					SetState(SIMON_STATE_INVISIBLE);
 				}
 				else if (e->obj->GetState() == ITEM_SMALL_HEART)
 					heart += 1;
@@ -213,11 +242,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else if (e->obj->GetState() == ITEM_CROSS)
 					isHitCross = true;
 				else if (e->obj->GetState() == ITEM_DOUBLE_SHOT)
-					doubleShot = true;
-				else if (e->obj->GetState() == ITEM_INVISIBILITY)
-					SetState(SIMON_STATE_INVISIBLE);
-				else if (e->obj->state == ITEM_BALL)
-					win = true;
+					doubleShot = true;					
 			}
 			else if (dynamic_cast<Zombie*>(e->obj))
 			{
@@ -238,7 +263,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							if (vx > 0)
 							{
 								SetState(SIMON_STATE_INJURED_LEFT);
-
 							}
 							else if (vx < 0)
 							{
@@ -251,9 +275,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 					else
 					{
+						/*if (!isUpdatePosition)
+							continue;*/
 						x += dx;
 						if (e->ny < 0)
 							y += dy;
+						//isUpdatePosition = true;
 					}
 				}			
 			}
@@ -288,6 +315,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else
 				{
+					/*if (!isUpdatePosition)
+						continue;*/
 					x += dx;
 					y += dy;
 				}
@@ -309,14 +338,11 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						else if (e->nx == 0)
 						{
 							if (vx > 0)
-							{
-								
+							{					
 								SetState(SIMON_STATE_INJURED_LEFT);
-
 							}
 							else if (vx < 0)
-							{
-							
+							{						
 								SetState(SIMON_STATE_INJURED_RIGHT);
 							}
 						}
@@ -328,6 +354,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 					else
 					{
+						/*if (!isUpdatePosition)
+							continue;*/
 						x += dx;
 						y += dy;
 					}
@@ -369,6 +397,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 					else
 					{
+						/*if (!isUpdatePosition)
+							continue;*/
 						x += dx;
 						y += dy;
 					}
@@ -407,6 +437,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else
 				{
+					/*if (!isUpdatePosition)
+						continue;*/
 					x += dx;
 					y += dy;
 				}
@@ -443,12 +475,16 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else
 				{
+					/*if (!isUpdatePosition)
+						continue;*/
 					x += dx;
 					y += dy;
 				}
 			}
 			else if (dynamic_cast<Stair*>(e->obj))
 			{
+			/*if (!isUpdatePosition)
+				continue;*/
 				if (e->nx != 0) x += dx;
 				if (e->ny != 0) y += dy;
 			}
@@ -458,10 +494,14 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				vy = 0;
 				SetState(SIMON_STATE_IDLE);
 
+				/*if (!isUpdatePosition)
+					continue;*/
 				x += dx;
 				//y += dy;
 			}
 			else {
+			/*if (!isUpdatePosition)
+				continue;*/
 				x += min_tx * dx + nx * 0.4f;;
 				y += min_ty * dy + ny * 0.46f;
 
@@ -685,7 +725,7 @@ void Simon::Render()
 	if (untouchable) alpha = 128;
 	animations[state]->Render(nx, x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Simon::SetState(int state)
@@ -699,6 +739,7 @@ void Simon::SetState(int state)
 			vx = SIMON_WALKING_SPEED;
 		else if(nx == -1)
 			vx = -SIMON_WALKING_SPEED;
+		vy = SIMON_WALKING_SPEED;
 		break;
 
 	case SIMON_STATE_JUMP:
@@ -739,12 +780,14 @@ void Simon::SetState(int state)
 	case SIMON_STATE_HIT_SITTING:
 	case SIMON_STATE_THROW_SIT:
 		isStand = FALSE;
+		//vy = SIMON_JUMP_SPEED_Y;
 		timer = GetTickCount();
 		animations[state]->ResetAnimation();
 		break;
 
 	case SIMON_STATE_POWER_UP:
 		isStand = TRUE;
+		vx = 0;
 		timer = GetTickCount();
 		animations[state]->ResetAnimation();
 		break;
@@ -816,4 +859,44 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 	top = y + 2;
 	right = x + SIMON_BBOX_WIDTH;
 	bottom = y + SIMON_BBOX_HEIGHT;
+}
+
+void Simon::FilterCollisionGround(
+	vector<LPCOLLISIONEVENT>& coEvents,
+	vector<LPCOLLISIONEVENT>& coEventsResult,
+	float & min_tx, float & min_ty, float & nx, float & ny)
+{
+	min_tx = 1.0f;
+	min_ty = 1.0f;
+	float min_ix = -1;
+	float min_iy = -1;
+
+	nx = 0.0f;
+	ny = 0.0f;
+
+	coEventsResult.clear();
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+	{
+		LPCOLLISIONEVENT c = coEvents[i];
+
+		if (!dynamic_cast<Ground*>(c->obj))
+		{
+			continue;
+		}
+
+		if (c->t <= min_tx && c->nx != 0)
+		{
+			min_tx = c->t;
+			nx = c->nx;
+			min_ix = i;
+		}
+
+		if (c->t <= min_ty && c->ny != 0) {
+			min_ty = c->t; ny = c->ny; min_iy = i;
+		}
+	}
+
+	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
 }
